@@ -137,6 +137,36 @@ def doar():
         # Retorna uma mensagem de sucesso com o código 201 (Created)
         return jsonify({"mensagem": "Livro cadastrado com sucesso"}), 201
 
+@app.route('/livros', methods=['GET'])
+def listar_livros():
+    # Conecta ao banco de dados SQLite
+    with sqlite3.connect('database.db') as conn:
+        # Executa um comando SQL para buscar todos os livros da tabela 'livros'
+        livros = conn.execute("SELECT * FROM livros").fetchall()
+
+        # Cria uma lista vazia para armazenar os livros formatados
+        livros_formatados = []
+
+        # Para cada livro retornado da consulta
+        for livro in livros:
+            # Cria um dicionário com os dados do livro
+            dicionario_livros = {
+                "id": livro[0],
+                "titulo": livro[1],
+                "categoria": livro[2],
+                "autor": livro[3],
+                "imagem_url": livro[4]
+            }
+
+            # Adiciona o livro formatado à lista de livros formatados
+            livros_formatados.append(dicionario_livros)
+
+        # Retorna a lista de livros formatados em formato JSON
+        return jsonify(livros_formatados)
+    
+
+        # Retorna o livro formatado em formato JSON
+        return jsonify(livro_formatado)
 
 if __name__ == "__main__":
     app.run(debug=True)
